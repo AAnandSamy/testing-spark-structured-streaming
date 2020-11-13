@@ -46,4 +46,5 @@ Console sink output:
 | Card_Transaction |        Creditor_Name |           Department |       Directorate | Irrecoverable_VAT | Net_Amount |    Organisation_Name | Payment_Date  | Service_Plan | Subjective_Detail |     Subjective_Group | Subjective_Subgroup  |   Transaction_No |
 |------------------|----------------------|----------------------|-------------------|-------------------|------------|----------------------|---------------|--------------|-------------------|----------------------|----------------------|------------------|
 |                  | Road Safety Analy... | Transp Highways &... | Economy and Place |                   |        995 | City of York Council | 2/4/2020 0:00 |    Transport |     Subscriptions | Supplies And Serv... | Grants and Subscr... | 202021CR00000001 |
+
 Hope your finding this very useful.
