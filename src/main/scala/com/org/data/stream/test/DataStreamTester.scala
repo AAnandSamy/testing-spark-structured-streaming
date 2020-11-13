@@ -16,6 +16,7 @@ object DataStreamTester extends App {
   // app config setu
   val sampleDta = prop.getProperty("value")
   val checkpointLocation = prop.getProperty("checkpointLocation")
+  val path = prop.getProperty("path")
 
   val spark = SparkSession
     .builder()
@@ -29,6 +30,11 @@ object DataStreamTester extends App {
   // prepare schema based on given message
   val ds = spark.createDataset(s"""${sampleDta}""" :: Nil)
   val ds_schema = spark.read.json(ds).schema
+  // read and transformations
+  val kds = readFromKafka(sampleDta)
+  val transDf = transform(kds)
+  // write sink
+  consoleSink(transDf, checkpointLocation)
 
   def readFromKafka(dta: String): Dataset[String] = {
     val stream = MemoryStream[String]
@@ -42,17 +48,27 @@ object DataStreamTester extends App {
       .select("dta.*")
   }
 
-  val kds = readFromKafka(sampleDta)
-  val transDf = transform(kds)
+  def consoleSink(df: DataFrame, checkpointLoc: String): Unit = {
+    df
+      .writeStream
+      .format("console")
+      .queryName("datastream")
+      .outputMode(OutputMode.Append())
+      .option("checkpointLocation", checkpointLoc)
+      .start()
+      .processAllAvailable()
+  }
 
-  transDf
-    .writeStream
-    .format("console")
-    .queryName("datastream")
-    .outputMode(OutputMode.Append())
-    .option("checkpointLocation", checkpointLocation)
-    .start()
-    .processAllAvailable()
-
+  def HDFSSink(df: DataFrame, checkpointLoc: String, path: String): Unit = {
+    df
+      .writeStream
+      .format("parquet")
+      .queryName("datastream")
+      .outputMode(OutputMode.Append())
+      .option("path", path)
+      .option("checkpointLocation", checkpointLoc)
+      .start()
+      .processAllAvailable()
+  }
 
 }
