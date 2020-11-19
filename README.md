@@ -21,7 +21,7 @@ Application Configuration
 ```
 Read,Transformations and Write
 
-``` 
+```scala
   // read and transformations
   val kds = readFromKafka(sampleDta)
   val transDf = transform(kds)
